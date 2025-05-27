@@ -10,7 +10,8 @@ async function initSelects()
     try 
     {
         // Cargar estudiantes
-        const students = await studentAPI.fetchAll();
+        model = 'students';
+        const students = await ModelAPI.fetchAll();
         const studentSelect = document.getElementById('studentIdSelect');
         students.forEach(s => 
         {
@@ -21,7 +22,8 @@ async function initSelects()
         });
 
         // Cargar materias
-        const subjects = await subjectAPI.fetchAll();
+        model = 'subjects';
+        const subjects = await ModelAPI.fetchAll();
         const subjectSelect = document.getElementById('subjectIdSelect');
         subjects.forEach(sub => 
         {
@@ -45,16 +47,16 @@ function setupFormHandler()
         e.preventDefault();
 
         const relation = getFormData();
-
+        model = 'studentsSubjets';
         try 
         {
             if (relation.id) 
             {
-                await studentsSubjectsAPI.update(relation);
+                await ModelAPI.update(relation);
             } 
             else 
             {
-                await studentsSubjectsAPI.create(relation);
+                await ModelAPI.create(relation);
             }
             clearForm();
             loadRelations();
@@ -86,7 +88,7 @@ async function loadRelations()
 {
     try 
     {
-        const relations = await studentsSubjectsAPI.fetchAll();
+        const relations = await ModelAPI.fetchAll();
         
         /**
          * DEBUG
@@ -106,7 +108,7 @@ async function loadRelations()
             rel.approved = Number(rel.approved);
         });
         
-        renderRelationsTable(relations);
+        renderRelationsTable(form_info);
     } 
     catch (err) 
     {
@@ -174,7 +176,7 @@ async function confirmDelete(id)
 
     try 
     {
-        await studentsSubjectsAPI.remove(id);
+        await ModelAPI.remove(id);
         loadRelations();
     } 
     catch (err) 

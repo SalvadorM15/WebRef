@@ -2,27 +2,30 @@ document.addEventListener('DOMContentLoaded', () =>
 {
     loadStudents();
     setupFormHandler();
-});
+}); 
+
+// si todo la informacion en html esta correctamente cargada ejecuta Loadstudents() & setupformHandler();
+
   
 function setupFormHandler()
 {
-    const form = document.getElementById('studentForm');
-    form.addEventListener('submit', async e => 
+    const form = document.getElementById('studentForm');  //guarda en una variable el formulario con ID studentform
+    form.addEventListener('submit', async e =>  //Ante el evento submit entra en la funcion flecha
     {
         e.preventDefault();
-        const student = getFormData();
+        const student = getFormData(); // Guarda toda la informacion del estudiante en la variable student
     
         try 
         {
-            if (student.id) 
+            if (student.id)  // si el estudiante existe lo actualiza, sino lo crea
             {
-            await studentAPI.update(student);
+            await studentAPI.update(student); 
             } 
             else 
             {
             await studentAPI.create(student);
             }
-            clearForm();
+            clearForm(); // vacia el formulario
             loadStudents();
         }
         catch (err)
