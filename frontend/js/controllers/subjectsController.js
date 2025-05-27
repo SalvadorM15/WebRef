@@ -10,6 +10,7 @@ function setupSubjectFormHandler()
   form.addEventListener('submit', async e => 
   {
         e.preventDefault();
+        model = 'subjets';
         const subject = 
         {
             id: document.getElementById('subjectId').value.trim(),
@@ -20,11 +21,11 @@ function setupSubjectFormHandler()
         {
             if (subject.id) 
             {
-                await subjectAPI.update(subject);
+                await ModelAPI.update(subject);
             }
             else
             {
-                await subjectAPI.create(subject);
+                await ModelAPI.create(subject);
             }
             
             form.reset();
@@ -42,7 +43,7 @@ async function loadSubjects()
 {
     try
     {
-        const subjects = await subjectAPI.fetchAll();
+        const subjects = await ModelAPI.fetchAll();
         renderSubjectTable(subjects);
     }
     catch (err)
@@ -103,7 +104,7 @@ async function confirmDeleteSubject(id)
 
     try
     {
-        await subjectAPI.remove(id);
+        await ModelAPI.remove(id);
         loadSubjects();
     }
     catch (err)

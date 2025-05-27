@@ -13,17 +13,17 @@ function setupFormHandler()
     form.addEventListener('submit', async e =>  //Ante el evento submit entra en la funcion flecha
     {
         e.preventDefault();
-        const student = getFormData(); // Guarda toda la informacion del estudiante en la variable student
-    
+        const student = getFormData(); // Guarda toda la informacion del estudiante en la variable form_info
+        model = 'student';
         try 
         {
             if (student.id)  // si el estudiante existe lo actualiza, sino lo crea
             {
-            await studentAPI.update(student); 
+            await ModelAPI.update(student); 
             } 
             else 
             {
-            await studentAPI.create(student);
+            await ModelAPI.create(student);
             }
             clearForm(); // vacia el formulario
             loadStudents();
@@ -55,7 +55,7 @@ async function loadStudents()
 {
     try 
     {
-        const students = await studentAPI.fetchAll();
+        const students = await ModelAPI.fetchAll();
         renderStudentTable(students);
     } 
     catch (err) 
@@ -122,7 +122,7 @@ async function confirmDelete(id)
   
     try 
     {
-        await studentAPI.remove(id);
+        await ModelAPI.remove(id);
         loadStudents();
     } 
     catch (err) 
