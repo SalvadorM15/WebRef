@@ -35,7 +35,7 @@ function setupFormHandler()
     });
 }
   
-function getFormData()
+function getFormData()  // funcion que recopila todos los campos del formulario
 {
     return {
         id: document.getElementById('studentId').value.trim(),
@@ -45,13 +45,13 @@ function getFormData()
     };
 }
   
-function clearForm()
+function clearForm() // resetea lps valores del formulario
 {
     document.getElementById('studentForm').reset();
     document.getElementById('studentId').value = '';
 }
   
-async function loadStudents()
+async function loadStudents() //carga los estudiantes desde la base de datos
 {
     try 
     {
@@ -64,7 +64,7 @@ async function loadStudents()
     }
 }
   
-function renderStudentTable(students)
+function renderStudentTable(students) 
 {
     const tbody = document.getElementById('studentTableBody');
     tbody.replaceChildren();
@@ -82,14 +82,14 @@ function renderStudentTable(students)
     });
 }
   
-function createCell(text)
+function createCell(text) // crea celda de la tabla del formulario
 {
     const td = document.createElement('td');
     td.textContent = text;
     return td;
 }
   
-function createActionsCell(student)
+function createActionsCell(student) // rellena celda de la tabla de formulario
 {
     const td = document.createElement('td');
   
@@ -108,7 +108,7 @@ function createActionsCell(student)
     return td;
 }
   
-function fillForm(student)
+function fillForm(student) // rellena el campo del fomrulario
 {
     document.getElementById('studentId').value = student.id;
     document.getElementById('fullname').value = student.fullname;
@@ -116,7 +116,7 @@ function fillForm(student)
     document.getElementById('age').value = student.age;
 }
   
-async function confirmDelete(id) 
+async function confirmDelete(id) // funcion de confirmacion de eliminacion de un elemento en la tabla
 {
     if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return;
   
