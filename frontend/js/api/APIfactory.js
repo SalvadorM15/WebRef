@@ -40,9 +40,9 @@ const ModelAPI =
 };
 
 
-async function sendJSON(method, data, model) 
+async function sendJSON(method, data) 
 {
-    const res = await fetch(GetAPI_URL(model), 
+    const res = await fetch(API_URL, 
     {
         method,
         headers: { 'Content-Type': 'application/json' },
