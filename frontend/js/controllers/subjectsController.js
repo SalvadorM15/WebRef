@@ -17,6 +17,21 @@ document.addEventListener('DOMContentLoaded', () =>
     setupCancelHandler();
 });
 
+
+async function existing_subject(name){
+
+    try{
+        const subjects = await subjectsAPI.fetchAll();
+        return subjects.some(subject => subject.name === name);
+    } 
+    catch(error){
+        console.log("error verificando la existencia de la materia");
+        return false;
+    }
+
+}
+
+
 function setupSubjectFormHandler() 
 {
   const form = document.getElementById('subjectForm');
@@ -28,26 +43,34 @@ function setupSubjectFormHandler()
             id: document.getElementById('subjectId').value.trim(),
             name: document.getElementById('name').value.trim()
         };
+        
+        const exists = await existing_subject(subject.name);
 
-        try 
-        {
-            if (subject.id) 
-            {
-                await subjectsAPI.update(subject);
-            }
-            else
-            {
-                await subjectsAPI.create(subject);
-            }
-            
-            form.reset();
-            document.getElementById('subjectId').value = '';
-            loadSubjects();
+        if(exists){
+            alert("la materia que se quiere introducir ya existe o no pudo ser introducida");
         }
-        catch (err)
-        {
-            console.error(err.message);
-        }
+        else{
+                try 
+                {
+                    if (subject.id) 
+                    {
+                        await subjectsAPI.update(subject);
+                        
+                    }
+                    else
+                    {
+                        await subjectsAPI.create(subject);
+                    }
+                    
+                    form.reset();
+                    document.getElementById('subjectId').value = '';
+                    loadSubjects();
+                }
+                catch (err)
+                {
+                    console.error(err.message);
+                }
+        }        
   });
 }
 

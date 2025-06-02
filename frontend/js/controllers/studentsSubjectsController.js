@@ -51,7 +51,16 @@ async function initSelects()
         console.error('Error cargando estudiantes o materias:', err.message);
     }
 }
-
+async function existing_relation(student , subject){
+    try{
+         const relations = await studentsSubjectsAPI.fetchAll();
+         return relations.some(relation => (relation.subject === subject && relation.student === student));
+    }
+    catch(error){
+        console.log("error al obtener las relaciones");
+        return false;
+    }
+}
 function setupFormHandler() 
 {
     const form = document.getElementById('relationForm');
@@ -60,25 +69,31 @@ function setupFormHandler()
         e.preventDefault();
 
         const relation = getFormData();
+        const rel_exists = await existing_relation(relation.student_id , relation.subject_id);
 
-        try 
-        {
-            if (relation.id) 
-            {
-                await studentsSubjectsAPI.update(relation);
-            } 
-            else 
-            {
-                await studentsSubjectsAPI.create(relation);
+        if(!rel_exists){
+                try 
+                {
+                    if (relation.id) 
+                    {
+                        await studentsSubjectsAPI.update(relation);
+                    } 
+                    else 
+                    {
+                        await studentsSubjectsAPI.create(relation);
+                    }
+                    clearForm();
+                    loadRelations();
+                } 
+                catch (err) 
+                {
+                    console.error('Error guardando relación:', err.message);
+                }
             }
-            clearForm();
-            loadRelations();
-        } 
-        catch (err) 
-        {
-            console.error('Error guardando relación:', err.message);
+        else{
+            alert("la relacion introducida ya existe");
         }
-    });
+    })
 }
 
 function setupCancelHandler()
