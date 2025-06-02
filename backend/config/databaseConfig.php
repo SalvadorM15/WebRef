@@ -1,13 +1,23 @@
 <?php
+/**
+*    File        : backend/config/databaseConfig.php
+*    Project     : CRUD PHP
+*    Author      : Tecnologías Informáticas B - Facultad de Ingeniería - UNMdP
+*    License     : http://www.gnu.org/licenses/gpl.txt  GNU GPL 3.0
+*    Date        : Mayo 2025
+*    Status      : Prototype
+*    Iteration   : 3.0 ( prototype )
+*/
+
 $host = "localhost";
-$user = "students_user";
+$user = "students_user_3";
 $password = "12345";
-$database = "students_db";
+$database = "students_db_3";
 
 $conn = new mysqli($host, $user, $password, $database);
-$conn->set_charset("utf8mb4");
 
-if ($conn->connect_error) {
+if ($conn->connect_error) 
+{
     http_response_code(500);
     die(json_encode(["error" => "Database connection failed"]));
 }

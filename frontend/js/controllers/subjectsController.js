@@ -1,7 +1,20 @@
+/**
+*    File        : frontend/js/controllers/subjectsController.js
+*    Project     : CRUD PHP
+*    Author      : Tecnologías Informáticas B - Facultad de Ingeniería - UNMdP
+*    License     : http://www.gnu.org/licenses/gpl.txt  GNU GPL 3.0
+*    Date        : Mayo 2025
+*    Status      : Prototype
+*    Iteration   : 3.0 ( prototype )
+*/
+
+import { subjectsAPI } from '../api/subjectsAPI.js';
+
 document.addEventListener('DOMContentLoaded', () => 
 {
     loadSubjects();
     setupSubjectFormHandler();
+    setupCancelHandler();
 });
 
 function setupSubjectFormHandler() 
@@ -10,7 +23,6 @@ function setupSubjectFormHandler()
   form.addEventListener('submit', async e => 
   {
         e.preventDefault();
-        model = 'subjets';
         const subject = 
         {
             id: document.getElementById('subjectId').value.trim(),
@@ -21,11 +33,11 @@ function setupSubjectFormHandler()
         {
             if (subject.id) 
             {
-                await ModelAPI.update(subject);
+                await subjectsAPI.update(subject);
             }
             else
             {
-                await ModelAPI.create(subject);
+                await subjectsAPI.create(subject);
             }
             
             form.reset();
@@ -39,11 +51,20 @@ function setupSubjectFormHandler()
   });
 }
 
+function setupCancelHandler()
+{
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => 
+    {
+        document.getElementById('subjectId').value = '';
+    });
+}
+
 async function loadSubjects()
 {
     try
     {
-        const subjects = await ModelAPI.fetchAll();
+        const subjects = await subjectsAPI.fetchAll();
         renderSubjectTable(subjects);
     }
     catch (err)
@@ -104,7 +125,7 @@ async function confirmDeleteSubject(id)
 
     try
     {
-        await ModelAPI.remove(id);
+        await subjectsAPI.remove(id);
         loadSubjects();
     }
     catch (err)

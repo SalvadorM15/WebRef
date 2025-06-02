@@ -1,7 +1,22 @@
+/**
+*    File        : frontend/js/controllers/studentsSubjectsController.js
+*    Project     : CRUD PHP
+*    Author      : Tecnologías Informáticas B - Facultad de Ingeniería - UNMdP
+*    License     : http://www.gnu.org/licenses/gpl.txt  GNU GPL 3.0
+*    Date        : Mayo 2025
+*    Status      : Prototype
+*    Iteration   : 3.0 ( prototype )
+*/
+
+import { studentsAPI } from '../api/studentsAPI.js';
+import { subjectsAPI } from '../api/subjectsAPI.js';
+import { studentsSubjectsAPI } from '../api/studentsSubjectsAPI.js';
+
 document.addEventListener('DOMContentLoaded', () => 
 {
     initSelects();
     setupFormHandler();
+    setupCancelHandler();
     loadRelations();
 });
 
@@ -10,8 +25,7 @@ async function initSelects()
     try 
     {
         // Cargar estudiantes
-        model = 'students';
-        const students = await ModelAPI.fetchAll();
+        const students = await studentsAPI.fetchAll();
         const studentSelect = document.getElementById('studentIdSelect');
         students.forEach(s => 
         {
@@ -22,8 +36,7 @@ async function initSelects()
         });
 
         // Cargar materias
-        model = 'subjects';
-        const subjects = await ModelAPI.fetchAll();
+        const subjects = await subjectsAPI.fetchAll();
         const subjectSelect = document.getElementById('subjectIdSelect');
         subjects.forEach(sub => 
         {
@@ -47,16 +60,16 @@ function setupFormHandler()
         e.preventDefault();
 
         const relation = getFormData();
-        model = 'studentsSubjets';
+
         try 
         {
             if (relation.id) 
             {
-                await ModelAPI.update(relation);
+                await studentsSubjectsAPI.update(relation);
             } 
             else 
             {
-                await ModelAPI.create(relation);
+                await studentsSubjectsAPI.create(relation);
             }
             clearForm();
             loadRelations();
@@ -65,6 +78,15 @@ function setupFormHandler()
         {
             console.error('Error guardando relación:', err.message);
         }
+    });
+}
+
+function setupCancelHandler()
+{
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => 
+    {
+        document.getElementById('relationId').value = '';
     });
 }
 
@@ -88,12 +110,12 @@ async function loadRelations()
 {
     try 
     {
-        const relations = await ModelAPI.fetchAll();
+        const relations = await studentsSubjectsAPI.fetchAll();
         
         /**
          * DEBUG
          */
-        console.log(relations);
+        //console.log(relations);
 
         /**
          * En JavaScript: Cualquier string que no esté vacío ("") es considerado truthy.
@@ -108,7 +130,7 @@ async function loadRelations()
             rel.approved = Number(rel.approved);
         });
         
-        renderRelationsTable(form_info);
+        renderRelationsTable(relations);
     } 
     catch (err) 
     {
@@ -125,9 +147,7 @@ function renderRelationsTable(relations)
     {
         const tr = document.createElement('tr');
 
-        // tr.appendChild(createCell(rel.fullname || rel.student_id));old
         tr.appendChild(createCell(rel.student_fullname));
-        // tr.appendChild(createCell(rel.name || rel.subject_id));old
         tr.appendChild(createCell(rel.subject_name));
         tr.appendChild(createCell(rel.approved ? 'Sí' : 'No'));
         tr.appendChild(createActionsCell(rel));
@@ -176,7 +196,7 @@ async function confirmDelete(id)
 
     try 
     {
-        await ModelAPI.remove(id);
+        await studentsSubjectsAPI.remove(id);
         loadRelations();
     } 
     catch (err) 

@@ -1,31 +1,41 @@
+/**
+*    File        : frontend/js/controllers/studentsController.js
+*    Project     : CRUD PHP
+*    Author      : Tecnologías Informáticas B - Facultad de Ingeniería - UNMdP
+*    License     : http://www.gnu.org/licenses/gpl.txt  GNU GPL 3.0
+*    Date        : Mayo 2025
+*    Status      : Prototype
+*    Iteration   : 3.0 ( prototype )
+*/
+
+import { studentsAPI } from '../api/studentsAPI.js';
+
 document.addEventListener('DOMContentLoaded', () => 
 {
     loadStudents();
     setupFormHandler();
-}); 
-
-// si todo la informacion en html esta correctamente cargada ejecuta Loadstudents() & setupformHandler();
-
+    setupCancelHandler();
+});
   
 function setupFormHandler()
 {
-    const form = document.getElementById('studentForm');  //guarda en una variable el formulario con ID studentform
-    form.addEventListener('submit', async e =>  //Ante el evento submit entra en la funcion flecha
+    const form = document.getElementById('studentForm');
+    form.addEventListener('submit', async e => 
     {
         e.preventDefault();
-        const student = getFormData(); // Guarda toda la informacion del estudiante en la variable form_info
-        model = 'student';
+        const student = getFormData();
+    
         try 
         {
-            if (student.id)  // si el estudiante existe lo actualiza, sino lo crea
+            if (student.id) 
             {
-            await ModelAPI.update(student); 
+                await studentsAPI.update(student);
             } 
             else 
             {
-            await ModelAPI.create(student);
+                await studentsAPI.create(student);
             }
-            clearForm(); // vacia el formulario
+            clearForm();
             loadStudents();
         }
         catch (err)
@@ -34,8 +44,17 @@ function setupFormHandler()
         }
     });
 }
+
+function setupCancelHandler()
+{
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => 
+    {
+        document.getElementById('studentId').value = '';
+    });
+}
   
-function getFormData()  // funcion que recopila todos los campos del formulario
+function getFormData()
 {
     return {
         id: document.getElementById('studentId').value.trim(),
@@ -45,17 +64,17 @@ function getFormData()  // funcion que recopila todos los campos del formulario
     };
 }
   
-function clearForm() // resetea lps valores del formulario
+function clearForm()
 {
     document.getElementById('studentForm').reset();
     document.getElementById('studentId').value = '';
 }
   
-async function loadStudents() //carga los estudiantes desde la base de datos
+async function loadStudents()
 {
     try 
     {
-        const students = await ModelAPI.fetchAll();
+        const students = await studentsAPI.fetchAll();
         renderStudentTable(students);
     } 
     catch (err) 
@@ -64,7 +83,7 @@ async function loadStudents() //carga los estudiantes desde la base de datos
     }
 }
   
-function renderStudentTable(students) 
+function renderStudentTable(students)
 {
     const tbody = document.getElementById('studentTableBody');
     tbody.replaceChildren();
@@ -82,14 +101,14 @@ function renderStudentTable(students)
     });
 }
   
-function createCell(text) // crea celda de la tabla del formulario
+function createCell(text)
 {
     const td = document.createElement('td');
     td.textContent = text;
     return td;
 }
   
-function createActionsCell(student) // rellena celda de la tabla de formulario
+function createActionsCell(student)
 {
     const td = document.createElement('td');
   
@@ -108,7 +127,7 @@ function createActionsCell(student) // rellena celda de la tabla de formulario
     return td;
 }
   
-function fillForm(student) // rellena el campo del fomrulario
+function fillForm(student)
 {
     document.getElementById('studentId').value = student.id;
     document.getElementById('fullname').value = student.fullname;
@@ -116,13 +135,13 @@ function fillForm(student) // rellena el campo del fomrulario
     document.getElementById('age').value = student.age;
 }
   
-async function confirmDelete(id) // funcion de confirmacion de eliminacion de un elemento en la tabla
+async function confirmDelete(id) 
 {
     if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return;
   
     try 
     {
-        await ModelAPI.remove(id);
+        await studentsAPI.remove(id);
         loadStudents();
     } 
     catch (err) 

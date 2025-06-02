@@ -1,21 +1,28 @@
 <?php
+/**
+*    File        : backend/controllers/studentsSubjectsController.php
+*    Project     : CRUD PHP
+*    Author      : Tecnologías Informáticas B - Facultad de Ingeniería - UNMdP
+*    License     : http://www.gnu.org/licenses/gpl.txt  GNU GPL 3.0
+*    Date        : Mayo 2025
+*    Status      : Prototype
+*    Iteration   : 3.0 ( prototype )
+*/
+
 require_once("./models/studentsSubjects.php");
 
 function handleGet($conn) 
 {
-    $result = getAllSubjectsStudents($conn);
-    $data = [];
-    while ($row = $result->fetch_assoc()) 
-    {
-        $data[] = $row;
-    }
-    echo json_encode($data);
+    $studentsSubjects = getAllSubjectsStudents($conn);
+    echo json_encode($studentsSubjects);
 }
 
 function handlePost($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (assignSubjectToStudent($conn, $input['student_id'], $input['subject_id'], $input['approved'])) 
+    
+    $result = assignSubjectToStudent($conn, $input['student_id'], $input['subject_id'], $input['approved']);
+    if ($result['inserted'] > 0) 
     {
         echo json_encode(["message" => "Asignación realizada"]);
     } 
@@ -37,7 +44,8 @@ function handlePut($conn)
         return;
     }
 
-    if (updateStudentSubject($conn, $input['id'], $input['student_id'], $input['subject_id'], $input['approved'])) 
+    $result = updateStudentSubject($conn, $input['id'], $input['student_id'], $input['subject_id'], $input['approved']);
+    if ($result['updated'] > 0) 
     {
         echo json_encode(["message" => "Actualización correcta"]);
     } 
@@ -51,7 +59,9 @@ function handlePut($conn)
 function handleDelete($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (removeStudentSubject($conn, $input['id'])) 
+
+    $result = removeStudentSubject($conn, $input['id']);
+    if ($result['deleted'] > 0) 
     {
         echo json_encode(["message" => "Relación eliminada"]);
     } 
